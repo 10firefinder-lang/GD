@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GOLD Sites | בונה אתרים</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23b45309'/><text x='16' y='22' font-family='system-ui' font-size='18' font-weight='700' fill='white' text-anchor='middle'>G</text></svg>" />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Heebo,system-ui,sans-serif;background:#f4efe6;color:#1c1917;height:100vh;overflow:hidden}
+    #root{height:100%}
+    .app{display:flex;flex-direction:column;height:100%}
+    header{height:56px;background:#1c1917;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 16px;flex-shrink:0}
+    .logo{display:flex;align-items:center;gap:10px;font-weight:600}
+    .logo-mark{width:32px;height:32px;background:#b45309;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700}
+    .btn{border:none;cursor:pointer;font-family:inherit;border-radius:8px;padding:8px 14px;font-size:14px;font-weight:500;transition:.15s}
+    .btn-primary{background:#b45309;color:#fff}
+    .btn-primary:hover{background:#92400e}
+    .btn-ghost{background:transparent;color:#d6d3d1}
+    .btn-ghost:hover{background:#44403c}
+    .layout{display:flex;flex:1;overflow:hidden}
+    .sidebar{width:280px;background:#fff;border-left:1px solid #e7e5e4;display:flex;flex-direction:column;flex-shrink:0}
+    .sidebar-right{border-left:none;border-right:1px solid #e7e5e4}
+    .sidebar h2{padding:16px;font-size:16px;border-bottom:1px solid #e7e5e4}
+    .blocks-grid{padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px;overflow-y:auto;flex:1}
+    .block-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 8px;border:1px solid #e7e5e4;border-radius:12px;background:#fff;cursor:pointer;font-family:inherit;font-size:13px;transition:.15s;text-align:center}
+    .block-btn:hover{border-color:#fbbf24;background:#fffbeb;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+    .block-btn span.icon{font-size:22px}
+    .canvas-wrap{flex:1;overflow-y:auto;background:#f4efe6}
+    .canvas{max-width:900px;margin:0 auto;padding:32px 20px;display:flex;flex-direction:column;gap:24px}
+    .block-wrap{position:relative;border-radius:12px;transition:.15s}
+    .block-wrap.selected{outline:2px solid #b45309;outline-offset:3px}
+    .block-toolbar{position:absolute;top:-36px;right:0;display:flex;gap:4px;background:#1c1917;border-radius:8px;padding:4px;z-index:10}
+    .block-toolbar button{background:transparent;border:none;color:#fff;padding:4px 8px;cursor:pointer;border-radius:4px;font-size:12px}
+    .block-toolbar button:hover{background:#44403c}
+    .block-toolbar button.danger:hover{background:#dc2626}
+    .empty{border:2px dashed #d6d3d1;border-radius:16px;padding:60px 20px;text-align:center;color:#a8a29e}
+    .props{padding:16px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:14px}
+    .props label{font-size:12px;font-weight:600;color:#78716c;display:block;margin-bottom:4px}
+    .props input,.props textarea,.props select{width:100%;padding:8px 10px;border:1px solid #e7e5e4;border-radius:8px;font-family:inherit;font-size:14px}
+    .props textarea{min-height:80px;resize:vertical}
+    /* Block styles */
+    .b-hero{position:relative;min-height:340px;border-radius:16px;overflow:hidden;display:flex;align-items:center;justify-content:center;background-size:cover;background-position:center;color:#fff}
+    .b-hero .overlay{position:absolute;inset:0;background:#000;opacity:.4}
+    .b-hero .content{position:relative;z-index:1;text-align:center;padding:40px 24px}
+    .b-hero h1{font-size:2.2rem;margin-bottom:12px;text-shadow:0 2px 8px rgba(0,0,0,.3)}
+    .b-hero p{font-size:1.1rem;opacity:.9}
+    .b-text{line-height:1.7}
+    .b-heading{font-weight:700}
+    .b-img img{width:100%;border-radius:12px;display:block}
+    .b-youtube{position:relative;padding-bottom:56.25%;background:#000;border-radius:12px;overflow:hidden}
+    .b-youtube iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+    .b-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .b-gallery img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;cursor:pointer}
+    .b-btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 28px;background:#b45309;color:#fff;border-radius:10px;font-weight:600;text-decoration:none;border:none;cursor:pointer;font-family:inherit}
+    .b-btn:hover{background:#92400e}
+    .b-form{background:#fff;border-radius:16px;padding:24px;border:1px solid #e7e5e4}
+    .b-form h3{margin-bottom:16px}
+    .b-form .field{margin-bottom:12px}
+    .b-form label{font-size:13px;font-weight:500;display:block;margin-bottom:4px}
+    .b-form input,.b-form textarea{width:100%;padding:10px 12px;border:1px solid #e7e5e4;border-radius:8px;font-family:inherit}
+    .b-form button{margin-top:8px;padding:12px 24px;background:#b45309;color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer;font-family:inherit}
+    .b-social{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+    .b-social a{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;text-decoration:none;transition:.15s}
+    .b-social a:hover{transform:scale(1.1)}
+    .b-html{border-radius:12px;overflow:hidden}
+    .b-faq details{background:#fff;border:1px solid #e7e5e4;border-radius:10px;margin-bottom:8px;overflow:hidden}
+    .b-faq summary{padding:14px 16px;cursor:pointer;font-weight:500;list-style:none;display:flex;justify-content:space-between}
+    .b-faq summary::-webkit-details-marker{display:none}
+    .b-faq .answer{padding:0 16px 14px;color:#57534e;line-height:1.6}
+    .b-spacer{height:40px}
+    .b-divider{border:none;border-top:1px solid #e7e5e4;margin:8px 0}
+    .whatsapp-float{position:fixed;bottom:24px;right:24px;background:#25D366;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.2);z-index:50}
+    .preview-bar{background:#b45309;color:#fff;text-align:center;padding:6px;font-size:13px}
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const BLOCKS = [
+      { type: 'hero', label: 'Hero', icon: '🖼️' },
+      { type: 'heading', label: 'כותרת', icon: 'H' },
+      { type: 'text', label: 'טקסט', icon: 'T' },
+      { type: 'image', label: 'תמונה', icon: '🌄' },
+      { type: 'youtube', label: 'YouTube', icon: '▶️' },
+      { type: 'gallery', label: 'גלריה', icon: '🖼️' },
+      { type: 'button', label: 'כפתור', icon: '🔘' },
+      { type: 'form', label: 'טופס', icon: '📝' },
+      { type: 'social', label: 'רשתות', icon: '🔗' },
+      { type: 'html', label: 'קוד', icon: '</>' },
+      { type: 'faq', label: 'FAQ', icon: '❓' },
+      { type: 'spacer', label: 'רווח', icon: '↕️' },
+      { type: 'divider', label: 'קו', icon: '—' },
+      { type: 'whatsapp', label: 'WhatsApp', icon: '💬' },
+    ];
+
+    function uid(){ return Math.random().toString(36).slice(2,10); }
+
+    function createBlock(type){
+      const id = uid();
+      switch(type){
+        case 'hero': return {id,type,title:'ברוכים הבאים',subtitle:'תיאור קצר של העסק',bg:'https://images.unsplash.com/photo-1557683316-973673baf926?w=1200'};
+        case 'heading': return {id,type,content:'כותרת ראשית',tag:'h2'};
+        case 'text': return {id,type,content:'הקלד כאן את הטקסט שלך...'};
+        case 'image': return {id,type,src:'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800',alt:'תמונה'};
+        case 'youtube': return {id,type,url:'https://www.youtube.com/watch?v=dQw4w9WgXcQ'};
+        case 'gallery': return {id,type,images:[
+          'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400',
+          'https://images.unsplash.com/photo-1557672172-298e090bd0f1?w=400',
+          'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=400'
+        ]};
+        case 'button': return {id,type,text:'לחץ כאן',href:'#'};
+        case 'form': return {id,type,title:'צור קשר'};
+        case 'social': return {id,type,links:[{n:'📘',u:'#'},{n:'📸',u:'#'},{n:'💬',u:'#'}]};
+        case 'html': return {id,type,code:'<div style="padding:20px;background:#f0f0f0;border-radius:8px;text-align:center">הטמע קוד כאן</div>'};
+        case 'faq': return {id,type,items:[{q:'איך מתחילים?',a:'פשוט בוחרים בלוק מהתפריט ומתחילים לערוך.'},{q:'אפשר דומיין?',a:'כן, אפשר לחבר דומיין מותאם אישית.'}]};
+        case 'spacer': return {id,type};
+        case 'divider': return {id,type};
+        case 'whatsapp': return {id,type,phone:'972500000000'};
+        default: return {id,type};
+      }
+    }
+
+    function extractYtId(url){
+      if(!url) return null;
+      const m = url.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([a-zA-Z0-9_-]{11})/);
+      return m ? m[1] : null;
+    }
+
+    function BlockView({block}){
+      switch(block.type){
+        case 'hero':
+          return <div className="b-hero" style={{backgroundImage:`url(${block.bg})`}}>
+            <div className="overlay"></div>
+            <div className="content"><h1>{block.title}</h1><p>{block.subtitle}</p></div>
+          </div>;
+        case 'heading':
+          return <h2 className="b-heading" style={{fontSize: block.tag==='h1'?'2rem':'1.6rem'}}>{block.content}</h2>;
+        case 'text':
+          return <p className="b-text">{block.content}</p>;
+        case 'image':
+          return <div className="b-img"><img src={block.src} alt={block.alt||''} /></div>;
+        case 'youtube': {
+          const vid = extractYtId(block.url);
+          return vid ? <div className="b-youtube"><iframe src={`https://www.youtube.com/embed/${vid}?rel=0`} allowFullScreen></iframe></div>
+            : <div style={{padding:40,background:'#e7e5e4',borderRadius:12,textAlign:'center'}}>הדבק קישור YouTube</div>;
+        }
+        case 'gallery':
+          return <div className="b-gallery">{(block.images||[]).map((src,i)=><img key={i} src={src} alt="" />)}</div>;
+        case 'button':
+          return <div style={{textAlign:'center'}}><a className="b-btn" href={block.href||'#'}>{block.text}</a></div>;
+        case 'form':
+          return <div className="b-form">
+            <h3>{block.title||'צור קשר'}</h3>
+            <div className="field"><label>שם</label><input placeholder="השם שלך" /></div>
+            <div className="field"><label>אימייל</label><input type="email" placeholder="email@example.com" /></div>
+            <div className="field"><label>הודעה</label><textarea rows="3" placeholder="כתוב כאן..."></textarea></div>
+            <button type="button">שלח</button>
+          </div>;
+        case 'social':
+          return <div className="b-social">{(block.links||[]).map((l,i)=><a key={i} href={l.u} style={{background:'#f5f5f4'}}>{l.n}</a>)}</div>;
+        case 'html':
+          return <div className="b-html" dangerouslySetInnerHTML={{__html: block.code||''}} />;
+        case 'faq':
+          return <div className="b-faq">{(block.items||[]).map((it,i)=>(
+            <details key={i}><summary>{it.q} <span>▼</span></summary><div className="answer">{it.a}</div></details>
+          ))}</div>;
+        case 'spacer': return <div className="b-spacer" />;
+        case 'divider': return <hr className="b-divider" />;
+        case 'whatsapp':
+          return <a className="whatsapp-float" href={`https://wa.me/${(block.phone||'').replace(/\D/g,'')}`} target="_blank" rel="noreferrer">💬</a>;
+        default: return <div>בלוק {block.type}</div>;
+      }
+    }
+
+    function PropsPanel({block, onChange}){
+      if(!block) return <div className="props" style={{color:'#a8a29e',textAlign:'center',paddingTop:40}}>בחר בלוק לעריכה</div>;
+      const set = (k,v)=> onChange({...block,[k]:v});
+      return (
+        <div className="props">
+          <div style={{fontWeight:700,marginBottom:4}}>{block.type}</div>
+          {['hero'].includes(block.type) && <>
+            <div><label>כותרת</label><input value={block.title||''} onChange={e=>set('title',e.target.value)} /></div>
+            <div><label>תת-כותרת</label><input value={block.subtitle||''} onChange={e=>set('subtitle',e.target.value)} /></div>
+            <div><label>תמונת רקע (URL)</label><input value={block.bg||''} onChange={e=>set('bg',e.target.value)} /></div>
+          </>}
+          {['heading','text'].includes(block.type) && (
+            <div><label>תוכן</label><textarea value={block.content||''} onChange={e=>set('content',e.target.value)} /></div>
+          )}
+          {block.type==='image' && <>
+            <div><label>כתובת תמונה</label><input value={block.src||''} onChange={e=>set('src',e.target.value)} /></div>
+            <div><label>Alt</label><input value={block.alt||''} onChange={e=>set('alt',e.target.value)} /></div>
+          </>}
+          {block.type==='youtube' && (
+            <div><label>קישור YouTube</label><input value={block.url||''} onChange={e=>set('url',e.target.value)} placeholder="https://youtube.com/watch?v=..." /></div>
+          )}
+          {block.type==='button' && <>
+            <div><label>טקסט</label><input value={block.text||''} onChange={e=>set('text',e.target.value)} /></div>
+            <div><label>קישור</label><input value={block.href||''} onChange={e=>set('href',e.target.value)} /></div>
+          </>}
+          {block.type==='form' && (
+            <div><label>כותרת טופס</label><input value={block.title||''} onChange={e=>set('title',e.target.value)} /></div>
+          )}
+          {block.type==='html' && (
+            <div><label>קוד HTML</label><textarea value={block.code||''} onChange={e=>set('code',e.target.value)} style={{direction:'ltr',textAlign:'left',minHeight:120}} /></div>
+          )}
+          {block.type==='whatsapp' && (
+            <div><label>מספר טלפון (עם קידומת)</label><input value={block.phone||''} onChange={e=>set('phone',e.target.value)} placeholder="972501234567" /></div>
+          )}
+        </div>
+      );
+    }
+
+    function App(){
+      const [blocks, setBlocks] = useState(()=>{
+        try{ return JSON.parse(localStorage.getItem('gold-blocks')||'[]'); }catch{return [];}
+      });
+      const [selected, setSelected] = useState(null);
+      const [preview, setPreview] = useState(false);
+
+      useEffect(()=>{
+        localStorage.setItem('gold-blocks', JSON.stringify(blocks));
+      },[blocks]);
+
+      const add = (type)=>{
+        const b = createBlock(type);
+        setBlocks(prev=>[...prev,b]);
+        setSelected(b.id);
+      };
+      const update = (b)=>{
+        setBlocks(prev=>prev.map(x=>x.id===b.id?b:x));
+      };
+      const remove = (id)=>{
+        setBlocks(prev=>prev.filter(x=>x.id!==id));
+        if(selected===id) setSelected(null);
+      };
+      const duplicate = (id)=>{
+        const orig = blocks.find(b=>b.id===id);
+        if(!orig) return;
+        const copy = {...JSON.parse(JSON.stringify(orig)), id:uid()};
+        const idx = blocks.findIndex(b=>b.id===id);
+        const next = [...blocks];
+        next.splice(idx+1,0,copy);
+        setBlocks(next);
+        setSelected(copy.id);
+      };
+
+      const sel = blocks.find(b=>b.id===selected);
+
+      return (
+        <div className="app">
+          <header>
+            <div className="logo">
+              <div className="logo-mark">G</div>
+              <span>GOLD Sites</span>
+            </div>
+            <div style={{display:'flex',gap:8}}>
+              <button className="btn btn-ghost" onClick={()=>setPreview(!preview)}>
+                {preview ? 'חזרה לעריכה' : 'תצוגה מקדימה'}
+              </button>
+              <button className="btn btn-primary" onClick={()=>alert('בגרסה המלאה כאן מתבצע פרסום')}>פרסם</button>
+            </div>
+          </header>
+          {preview && <div className="preview-bar">מצב תצוגה מקדימה — לחץ "חזרה לעריכה" כדי להמשיך</div>}
+          <div className="layout">
+            {!preview && (
+              <aside className="sidebar">
+                <h2>הוסף בלוק</h2>
+                <div className="blocks-grid">
+                  {BLOCKS.map(b=>(
+                    <button key={b.type} className="block-btn" onClick={()=>add(b.type)}>
+                      <span className="icon">{b.icon}</span>
+                      {b.label}
+                    </button>
+                  ))}
+                </div>
+              </aside>
+            )}
+            <div className="canvas-wrap" onClick={()=>!preview && setSelected(null)}>
+              <div className="canvas">
+                {blocks.length===0 && !preview && (
+                  <div className="empty">
+                    <p style={{fontSize:18,marginBottom:8}}>האתר ריק עדיין</p>
+                    <p style={{fontSize:14}}>בחר בלוק מהתפריט בצד כדי להתחיל</p>
+                  </div>
+                )}
+                {blocks.map(b=>(
+                  <div key={b.id}
+                    className={`block-wrap ${selected===b.id && !preview ? 'selected':''}`}
+                    onClick={e=>{e.stopPropagation(); if(!preview) setSelected(b.id);}}
+                  >
+                    {selected===b.id && !preview && (
+                      <div className="block-toolbar">
+                        <button onClick={()=>duplicate(b.id)}>שכפל</button>
+                        <button className="danger" onClick={()=>remove(b.id)}>מחק</button>
+                      </div>
+                    )}
+                    <BlockView block={b} />
+                  </div>
+                ))}
+              </div>
+            </div>
+            {!preview && (
+              <aside className="sidebar sidebar-right">
+                <h2>הגדרות</h2>
+                <PropsPanel block={sel} onChange={update} />
+              </aside>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
